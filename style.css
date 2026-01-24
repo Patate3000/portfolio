@@ -62,7 +62,7 @@ p, a, ul, li, .texte, .cadre, .excadre, u, .nom, ol, .suggestion-item, button, i
 }
 
 /* RESPONSIVE */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1000px) {
     .container { 
         display: grid;
         grid-template-columns: 1fr 1fr; 
@@ -761,3 +761,4 @@ button:hover,
 
 
 /* *********************** Fin Flèche Trait et cadre-exp ************************ */
+
