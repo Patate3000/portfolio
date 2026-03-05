@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compétences — Théo Cabrelli</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #07123a;
+      --accent: #3d6bff;
+      --accent2: #7ea8ff;
+      --white: #ffffff;
+      --text: #d4deff;
+      --muted: #7b8db5;
+      --card-bg: #0c1b4d;
+      --card-border: rgba(61, 107, 255, 0.25);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background-color: var(--navy);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.5;
+    }
+
+    /* NAV */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      padding: 18px 24px;
+      backdrop-filter: blur(20px);
+      background: rgba(7, 18, 58, 0.85);
+      border-bottom: 1px solid rgba(61, 107, 255, 0.15);
+    }
+    nav {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .nom {
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 700; font-size: 1.6rem;
+      color: var(--white); letter-spacing: 0.02em;
+    }
+    .nav-links { display: flex; gap: 6px; flex-wrap: wrap; }
+    .nav-links a {
+      font-size: 0.875rem; font-weight: 500; color: var(--muted);
+      text-decoration: none; padding: 8px 18px;
+      border-radius: 50px; border: 1px solid transparent;
+      transition: all 0.25s ease;
+    }
+    .nav-links a:hover { color: var(--white); border-color: var(--card-border); background: rgba(61,107,255,0.12); }
+    .nav-links a.active { color: var(--accent2); background: rgba(61,107,255,0.18); border-color: rgba(61,107,255,0.4); }
+
+    /* HERO */
+    .hero {
+      max-width: 1200px; margin: 0 auto;
+      padding: 80px 32px 40px;
+      position: relative; z-index: 1;
+    }
+    .hero-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.78rem; font-weight: 500;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent2); margin-bottom: 20px;
+    }
+    .hero-label::before { content: ''; width: 24px; height: 1px; background: var(--accent2); }
+    .hero h1 {
+      font-family: 'Quicksand', sans-serif;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 700; color: var(--white);
+      line-height: 1.15; margin-bottom: 32px;
+    }
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    /* SEARCH */
+    .search-wrap { position: relative; max-width: 460px; }
+    .search-wrap input {
+      width: 100%; background: var(--card-bg);
+      border: 1px solid var(--card-border); border-radius: 50px;
+      padding: 12px 20px 12px 44px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+      color: var(--white); outline: none; transition: border-color 0.25s;
+    }
+    .search-wrap input::placeholder { color: var(--muted); }
+    .search-wrap input:focus { border-color: rgba(61,107,255,0.5); box-shadow: 0 0 0 3px rgba(61,107,255,0.1); }
+    .search-icon {
+      position: absolute; left: 16px; top: 50%;
+      transform: translateY(-50%); color: var(--muted); pointer-events: none;
+    }
+    .suggestions {
+      position: fixed;
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 16px; overflow: hidden; z-index: 9999; display: none;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.7); max-height: 320px; overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(61, 107, 255, 0.4) transparent;
+    }
+
+    .suggestions::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .suggestions::-webkit-scrollbar-track {
+      background: transparent;
+      margin: 8px 0;
+    }
+
+    .suggestions::-webkit-scrollbar-thumb {
+      background: rgba(61, 107, 255, 0.4);
+      border-radius: 4px;
+    }
+
+    .suggestions::-webkit-scrollbar-thumb:hover {
+      background: rgba(61, 107, 255, 0.7);
+    }
+    .suggestion-item {
+      padding: 10px 18px; font-size: 0.83rem; color: var(--text);
+      cursor: pointer; border-bottom: 1px solid rgba(61,107,255,0.08);
+      transition: background 0.2s; line-height: 1.4;
+    }
+    .suggestion-item:last-child { border-bottom: none; }
+    .suggestion-item:hover { background: rgba(61,107,255,0.12); color: var(--white); }
+
+    /* TABS */
+    .main-wrap {
+      max-width: 1200px; margin: 0 auto;
+      padding: 40px 32px 100px;
+      position: relative; z-index: 1;
+    }
+    .tabs { display: flex; gap: 10px; margin-bottom: 40px; flex-wrap: wrap; }
+    .tab-btn {
+      font-family: 'Quicksand', sans-serif; font-weight: 600; font-size: 0.9rem;
+      padding: 12px 28px; border-radius: 50px;
+      border: 1px solid var(--card-border); background: var(--card-bg);
+      color: var(--muted); cursor: pointer; transition: all 0.25s ease;
+    }
+    .tab-btn:hover { color: var(--white); border-color: rgba(61,107,255,0.5); }
+    .tab-btn.active { background: var(--accent); border-color: var(--accent); color: var(--white); box-shadow: 0 4px 20px rgba(61,107,255,0.35); }
+
+    /* GRID */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 20px;
+    }
+
+    /* CARD */
+    .comp-card {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 20px; padding: 28px 30px;
+      transition: all 0.3s ease; position: relative; overflow: hidden;
+      opacity: 0; transform: translateY(20px);
+      animation: fadeUp 0.5s ease forwards;
+    }
+    .comp-card:nth-child(1) { animation-delay: 0.05s; }
+    .comp-card:nth-child(2) { animation-delay: 0.10s; }
+    .comp-card:nth-child(3) { animation-delay: 0.15s; }
+    .comp-card:nth-child(4) { animation-delay: 0.20s; }
+    .comp-card:nth-child(5) { animation-delay: 0.25s; }
+    .comp-card:nth-child(6) { animation-delay: 0.30s; }
+
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+    .comp-card::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at top left, rgba(61,107,255,0.06), transparent 60%);
+      pointer-events: none;
+    }
+    .comp-card:hover {
+      border-color: rgba(61,107,255,0.5);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+      transform: translateY(-4px);
+    }
+    .comp-card h2 {
+      font-family: 'Quicksand', sans-serif; font-size: 1.1rem; font-weight: 700;
+      color: var(--white); margin-bottom: 14px;
+      display: flex; align-items: center; gap: 10px; line-height: 1.3;
+    }
+    .comp-card h2::before {
+      content: ''; width: 4px; height: 22px;
+      background: linear-gradient(to bottom, var(--accent), var(--accent2));
+      border-radius: 4px; flex-shrink: 0;
+    }
+    .comp-card h3 {
+      font-family: 'Quicksand', sans-serif; font-size: 0.78rem; font-weight: 700;
+      color: var(--accent2); text-transform: uppercase;
+      letter-spacing: 0.07em; margin: 16px 0 8px;
+    }
+    .comp-card p {
+      font-size: 0.85rem; color: var(--muted); line-height: 1.65; margin-bottom: 8px;
+    }
+    .comp-card a { color: var(--accent2); text-decoration: none; font-size: 0.85rem; }
+    .comp-card a:hover { text-decoration: underline; }
+
+    .comp-card ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .comp-card ul li {
+      font-size: 0.84rem; color: var(--text);
+      display: flex; gap: 9px; align-items: flex-start; line-height: 1.55;
+    }
+    .comp-card ul li::before {
+      content: ''; width: 5px; height: 5px; border-radius: 50%;
+      background: var(--accent); flex-shrink: 0; margin-top: 7px;
+    }
+
+    .num-list { list-style: none; counter-reset: step; display: flex; flex-direction: column; gap: 7px; }
+    .num-list li {
+      font-size: 0.84rem; color: var(--text);
+      display: flex; gap: 10px; align-items: flex-start;
+      line-height: 1.55; counter-increment: step;
+    }
+    .num-list li::before {
+      content: counter(step); min-width: 20px; height: 20px;
+      border-radius: 50%; background: rgba(61,107,255,0.18);
+      border: 1px solid rgba(61,107,255,0.35);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; font-weight: 700; color: var(--accent2);
+      flex-shrink: 0; margin-top: 1px;
+    }
+
+    .divider-c { height: 1px; background: rgba(61,107,255,0.12); margin: 14px 0; }
+
+    .tag {
+      display: inline-block; font-size: 0.7rem; font-weight: 600;
+      letter-spacing: 0.05em; padding: 3px 10px; border-radius: 50px;
+      background: rgba(61,107,255,0.12); border: 1px solid rgba(61,107,255,0.25);
+      color: var(--accent2); margin-bottom: 14px;
+    }
+
+    .text-scan {
+      display: inline; border-radius: 3px;
+      animation: scanAnim 2s ease;
+    }
+    @keyframes scanAnim {
+      0%   { background: rgba(61,107,255,0.45); }
+      100% { background: transparent; }
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center; padding: 40px;
+      font-size: 0.8rem; color: var(--muted);
+      border-top: 1px solid rgba(61,107,255,0.1);
+      position: relative; z-index: 1;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 860px) { .cards-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 600px) {
+      .hero { padding: 48px 20px 32px; }
+      .main-wrap { padding: 24px 16px 60px; }
+      nav { flex-direction: column; }
+      .nav-links { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="nom">Théo Cabrelli</div>
+    <div class="nav-links">
+      <a href="index.html">Accueil</a>
+      <a href="experiences.html">Expériences</a>
+      <a href="competences.html" class="active">Compétences</a>
+      <a href="veille_technologique.html">Veille</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-label">Savoir-faire</div>
+  <h1>Mes <span>Compétences</span></h1>
+  <div class="search-wrap">
+    <svg class="search-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    <input type="text" id="searchInput" placeholder="Rechercher une compétence..." oninput="searchText()">
+  </div>
+</section>
+
+<div class="main-wrap">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('pro', this)">Projets professionnels</button>
+    <button class="tab-btn" onclick="switchTab('perso', this)">Compétences personnelles</button>
+  </div>
+
+  <!-- PROJETS PROFESSIONNELS -->
+  <div id="panel-pro" class="cards-grid">
+
+    <div class="comp-card">
+      <h2>Mini-projets personnels</h2>
+      <p style="text-align: justify;">Afin d'en apprendre toujours plus en dehors des cours, je réalise durant mon temps libre des mini-projets en systèmes et réseaux.</p>
+      <h3>Fortigate Lab</h3>
+      <ul>
+        <li>Configuration SNMPV3</li>
+        <li>Configuration VPN Site-Site</li>
+        <li>Configuration des Client Site</li>
+        <li>Configuration Règles Filtrages</li>
+        <li>Configuration NAT et Route</li>
+      </ul>
+      <div class="divider-c"></div>
+      <h3>Linux</h3>
+      <ul>
+        <li>Serveur Mail : Configuration et installation d'un serveur SMTP Postfix local</li>
+        <li>Serveur VPN : OpenVPN client-site avec règle NAT · WireGuard client-site + règles utilisateurs</li>
+        <li>IDS/IPS : Snort et Suricata — détection, alerte et blocage sur le réseau</li>
+        <li>Serveur IA : Ollama + Docker interface web · Agent IA N8N avec modèles locaux (Ollama)</li>
+        <li>Web3/Blockchain : Création d'un smart contract et son utilisation</li>
+        <li>EVE-NG : Lab réseau (switch N2/N3, pare-feu, VM Debian et Windows)</li>
+        <li>Kubernetes : configuration .yaml, exécution POD, sécurisation POD</li>
+      </ul>
+      <div class="divider-c"></div>
+      <h3>Windows</h3>
+      <ul>
+        <li>ISO Windows 11 personnalisé, bootable EFI/UEFI, déployable avec WCS</li>
+        <li>Win SRV 2022 SharePoint avec SRV AD DC et BDD</li>
+        <li>Script Bash SNMPV3 — récupération OIDs sur routeurs Fortigate et Cisco</li>
+        <li>Initiation au langage Assembleur</li>
+      </ul>
+    </div>
+
+    <div class="comp-card">
+      <h2>Application CherryTree Phone</h2>
+      <span class="tag">Projet GitHub</span>
+      <p style="text-align: justify;">Depuis quelques années j'utilise CherryTree, un logiciel open source pour organiser ses notes en arborescence. N'ayant pas d'équivalent sur téléphone, j'ai développé ma propre version de zéro.</p>
+      <p><a href="https://github.com/Patate3000/CherryTree-Phone" target="_blank">github.com/Patate3000/CherryTree-Phone</a></p>
+      <div class="divider-c"></div>
+      <ul>
+        <li>Interface basée sur HTML et JavaScript</li>
+        <li>Configuration des fichiers Android Studio pour bon fonctionnement sur appareil Android</li>
+        <li>Import d'un fichier CherryTree depuis un ordinateur</li>
+        <li>Lecture correcte de l'arborescence sur mobile via APK</li>
+      </ul>
+    </div>
+
+    <div class="comp-card">
+      <h2>Projet 1re année BTS — MuséoConnect</h2>
+      <span class="tag">Infrastructure réseau fictive</span>
+      <p style="text-align: justify;">Modernisation de l'infrastructure pour répondre à l'augmentation des besoins en capacité et en performance, tout en améliorant la gestion du matériel et des données.</p>
+      <h3>Plan d'adressage réseau</h3>
+      <ul>
+        <li>Différentes plages réseau avec VLANs et SVI</li>
+        <li>Nommage des équipements et IPs statiques</li>
+      </ul>
+      <h3>Configuration équipements</h3>
+      <ul>
+        <li>Routeur · Switch cœur · Switch access</li>
+      </ul>
+      <h3>Serveurs</h3>
+      <ul>
+        <li>Proxmox · DHCP/ADDS/DNS · Fichiers · Web</li>
+      </ul>
+      <div class="divider-c"></div>
+      <p>
+        <a href="documents/Rapport_d'infrastructure_réseau_museoconnect.pdf">📄 Infrastructure réseau PDF</a>
+        &nbsp;·&nbsp;
+        <a href="documents/infrastructure_réseau.pkt">🖧 Fichier PKT</a>
+      </p>
+    </div>
+
+    <div class="comp-card">
+      <h2>Projet 2e année BTS — Station F</h2>
+      <span class="tag">Infrastructure réseau fictive</span>
+      <p style="text-align: justify;">Renforcement des services web et sécurisation de l'infrastructure avec authentification centralisée, automatisation réseau et partage sécurisé des ressources documentaires.</p>
+      <h3>Plan d'adressage réseau</h3>
+      <ul>
+        <li>VLANs, SVI, DMZ, IPs statiques</li>
+      </ul>
+      <h3>Configuration équipements</h3>
+      <ul>
+        <li>Redondance Routeur Stormshield</li>
+        <li>Stack Switch cœur · Redondance Switch access</li>
+      </ul>
+      <h3>Serveurs</h3>
+      <ul>
+        <li>Proxmox</li>
+        <li>Redondance DHCP/ADDS/DNS + GPO</li>
+        <li>Redondance serveur de fichiers</li>
+        <li>Autorité de certification</li>
+        <li>Redondance reverse proxy avec Keepalived</li>
+        <li>Centralisation des logs avec Filebeat</li>
+        <li>Serveur de base de données</li>
+      </ul>
+      <div class="divider-c"></div>
+      <p>
+        <a href="documents/rapport_infra_projet_stationf.pdf">📄 Infrastructure réseau PDF</a>
+        &nbsp;·&nbsp;
+        <a href="documents/infra_projet_stationf.pkt">🖧 Fichier PKT</a>
+      </p>
+    </div>
+
+    <div class="comp-card">
+      <h2>Compétences E4 / E5 BTS SIO</h2>
+      <span class="tag">BTS SIO SISR</span>
+      <h3>Compétences mises en œuvre</h3>
+      <ol class="num-list">
+        <li>Gérer le patrimoine informatique</li>
+        <li>Répondre aux incidents et aux demandes d'assistance et d'évolution</li>
+        <li>Développer la présence en ligne de l'organisation</li>
+        <li>Travailler en mode projet</li>
+        <li>Mettre à disposition des utilisateurs un service informatique</li>
+        <li>Organiser son développement professionnel</li>
+      </ol>
+      <div class="divider-c"></div>
+      <ul>
+        <li>Infrastructure réseau Station F — compétences 1 à 6</li>
+        <li>Installation serveurs, déploiement services réseau, sauvegardes (1, 3, 6)</li>
+        <li>Serveur web Apache, CMS, SSL/TLS (1, 2, 5, 6)</li>
+        <li>Configuration postes de travail (1, 2, 6)</li>
+        <li>Gestion tickets GLPI, dépannage, documentation (2, 4, 6)</li>
+      </ul>
+      <div class="divider-c"></div>
+      <p><a href="documents/Epreuve_E5_BTS_SIO_2025_Theo_Cabrelli.pdf">📄 Document E5</a></p>
+    </div>
+
+  </div>
+
+  <!-- COMPÉTENCES PERSONNELLES -->
+  <div id="panel-perso" class="cards-grid" style="display:none;">
+
+    <div class="comp-card">
+      <h2>Configurations matériels réseau</h2>
+      <span class="tag">Cisco · HP · Stormshield</span>
+      <h3>Routeur</h3>
+      <ul>
+        <li>SVI · NAT vers réseau externe</li>
+        <li>SSH avec ACL</li>
+        <li>Routes statique et dynamique (OSPF, EIGRP, RIPv2, IS-IS)</li>
+        <li>Redondance FHRP, HSRP, VRRP, GLBP</li>
+        <li>VPN site-site</li>
+      </ul>
+      <h3>Switch cœur</h3>
+      <ul>
+        <li>VLAN avec passerelles · IP Routing · Routage inter-VLAN</li>
+        <li>SSH avec ACL · Agrégation · IRF (Stack)</li>
+      </ul>
+      <h3>Switch access</h3>
+      <ul>
+        <li>VLAN pour segmenter le réseau · Mode VTP · SSH avec ACL</li>
+      </ul>
+      <h3>Stormshield</h3>
+      <ul>
+        <li>Haute disponibilité · ACL · Routing · Filtrage NAT</li>
+        <li>Création d'objets et réseaux · Ajout IP/interface/VLAN</li>
+        <li>VPN IPSEC site-site et client-site</li>
+        <li>Filtrage URL · Agent ELK Filebeat (Elasticsearch)</li>
+      </ul>
+    </div>
+
+    <div class="comp-card">
+      <h2>Windows Server</h2>
+      <span class="tag">Windows Server 2022</span>
+      <p>Installation et configuration sur Proxmox et VirtualBox.</p>
+      <h3>Sécurisation AD</h3>
+      <ul>
+        <li>PingCastle · Agent CheckMK · Agent ELK Filebeat</li>
+      </ul>
+      <h3>DHCP / DNS / ADDS</h3>
+      <ul>
+        <li>Étendues DHCP · DNS · Domaine ADDS</li>
+        <li>Utilisateurs avec droits et lecteurs réseau</li>
+        <li>Serveur de fichiers et sessions ADDS</li>
+      </ul>
+      <h3>Droits NTFS / GPO</h3>
+      <ul>
+        <li>Profils AD · HomeFolders · droits d'accès</li>
+        <li>Mappages réseau · restrictions terminal et carte réseau</li>
+      </ul>
+      <h3>Autres services</h3>
+      <ul>
+        <li>WDS : boot PXE depuis ISO réseau</li>
+        <li>DNS pour serveurs web et équipements</li>
+        <li>Autorité de certification autosignée</li>
+      </ul>
+    </div>
+
+    <div class="comp-card">
+      <h2>Services Linux</h2>
+      <span class="tag">Debian 12</span>
+      <p>Installation et configuration sur serveur Debian 12.</p>
+      <h3>Les bases</h3>
+      <ul>
+        <li>Terminal, configuration IP, Apache2 + WordPress</li>
+        <li>Fail2ban · Rsyslog · UFW</li>
+      </ul>
+      <h3>SQL / Web</h3>
+      <ul>
+        <li>MySQL · PhpMyAdmin · site relié à BDD</li>
+        <li>Reverse proxy HAProxy (HTTP/HTTPS) avec redirection DNS</li>
+        <li>Keepalived pour redondance serveurs</li>
+      </ul>
+      <h3>Sécurité / VPN / Conteneurs</h3>
+      <ul>
+        <li>IDS/IPS Snort : détection et blocage réseau</li>
+        <li>OpenVPN et WireGuard client-site</li>
+        <li>Docker : installation, configuration, commandes</li>
+        <li>Serveur SMTP Postfix</li>
+      </ul>
+      <h3>Supervision / Logs / IA</h3>
+      <ul>
+        <li>ELK Elasticsearch + Filebeat · CheckMK</li>
+        <li>Ollama + Docker interface web</li>
+        <li>IA RNN de prédiction de mots</li>
+        <li>Agent IA N8N avec modèles locaux Ollama</li>
+      </ul>
+      <h3>Pentest</h3>
+      <ul>
+        <li>Attaques sur système Linux · ARP Spoofing</li>
+        <li>CTF : TryHackMe · Root Me · Hack The Box</li>
+      </ul>
+    </div>
+
+    <div class="comp-card">
+      <h2>Windows</h2>
+      <span class="tag">Windows 10 / 11</span>
+      <p>Installation et configuration de postes sous Windows 10 et 11.</p>
+      <ul>
+        <li>Configuration réseau sur poste</li>
+        <li>Création d'ISO personnalisé</li>
+        <li>Partage de disques sur le réseau et droits NTFS</li>
+        <li>Partitionnement de disque</li>
+        <li>Utilisation de PowerShell</li>
+        <li>Configuration BitLocker</li>
+        <li>Virtualisation avec VirtualBox et VMware</li>
+      </ul>
+    </div>
+
+    <div class="comp-card">
+      <h2>Développement</h2>
+      <span class="tag">Web · Script · Système</span>
+      <p>Développement web et implémentation sur serveur Debian 12 LAMP.</p>
+      <h3>HTML / CSS</h3>
+      <ul>
+        <li>Liens, images, boutons, listes, paragraphes</li>
+        <li>Polices, formes, classes CSS, positionnement</li>
+      </ul>
+      <h3>PHP</h3>
+      <ul>
+        <li>Connexion BDD · sessions · requêtes SQL</li>
+        <li>Chat interactif multi-utilisateurs</li>
+        <li>Web shell et reverse shell</li>
+      </ul>
+      <h3>Python</h3>
+      <ul>
+        <li>Script récupération MDP Google, IP, répertoires utilisateurs</li>
+        <li>Calcul IP en binaire · vérification nombre premier</li>
+      </ul>
+      <h3>Bash</h3>
+      <ul>
+        <li>Automatisation création utilisateurs, renommage machine, ajout domaine</li>
+        <li>Automatisation Fail2ban, Rsyslog, UFW</li>
+        <li>Automatisation site HTTP avec Apache2 et HAProxy + redirection DNS</li>
+        <li>Automatisation site HTTPS avec Apache2, HAProxy, DNS et certificat d'autorité privée</li>
+      </ul>
+    </div>
+
+    <div class="comp-card">
+      <h2>Support & Maintenance</h2>
+      <span class="tag">GLPI · Cisco Packet Tracer</span>
+      <p>Support réalisé sur GLPI ou en virtuel sur Cisco Packet Tracer.</p>
+      <h3>GLPI</h3>
+      <ul>
+        <li>Ajout de rôles pour les techniciens</li>
+        <li>Transfert et résolution de tickets</li>
+        <li>Maintenance à distance ou sur site</li>
+      </ul>
+      <h3>Cisco Packet Tracer</h3>
+      <ul>
+        <li>Analyse et compréhension des problèmes réseau</li>
+        <li>Tests et résolution de problèmes</li>
+        <li>Modification des paramètres machines</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 Théo Cabrelli · Portfolio</p>
+</footer>
+
+<div id="suggestions" class="suggestions"></div>
+
+<script>
+  function switchTab(panel, btn) {
+    document.getElementById('panel-pro').style.display   = panel === 'pro'   ? 'grid' : 'none';
+    document.getElementById('panel-perso').style.display = panel === 'perso' ? 'grid' : 'none';
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  window.onload = () => switchTab('pro', document.querySelector('.tab-btn'));
+
+  /* SEARCH */
+  const input = document.getElementById("searchInput");
+  const suggestions = document.getElementById("suggestions");
+
+  function positionSuggestions() {
+    const rect = input.getBoundingClientRect();
+    suggestions.style.top  = (rect.bottom + 8) + 'px';
+    suggestions.style.left = rect.left + 'px';
+    suggestions.style.width = rect.width + 'px';
+  }
+
+  function searchText() {
+    const value = input.value.toLowerCase().trim();
+    suggestions.innerHTML = "";
+    if (!value) { suggestions.style.display = "none"; return; }
+
+    const allItems = document.querySelectorAll(".comp-card li, .comp-card p, .comp-card h3");
+    const matches = [];
+
+    allItems.forEach(item => {
+      if (item.textContent.toLowerCase().includes(value) && matches.length < 10) {
+        matches.push(item);
+        const div = document.createElement("div");
+        div.className = "suggestion-item";
+        const text = item.textContent.trim();
+        div.textContent = text.length > 90 ? text.substring(0, 90) + '…' : text;
+        div.onclick = () => {
+          const panel = item.closest('[id^="panel-"]');
+          if (panel) {
+            const panelName = panel.id === 'panel-perso' ? 'perso' : 'pro';
+            switchTab(panelName, document.querySelectorAll('.tab-btn')[panelName === 'pro' ? 0 : 1]);
+          }
+          setTimeout(() => {
+            item.scrollIntoView({ behavior: "smooth", block: "center" });
+            const span = document.createElement("span");
+            span.className = "text-scan";
+            span.textContent = item.textContent;
+            item.innerHTML = "";
+            item.appendChild(span);
+            setTimeout(() => { item.innerHTML = span.textContent; }, 2000);
+          }, 120);
+          suggestions.style.display = "none";
+          input.value = "";
+        };
+        suggestions.appendChild(div);
+      }
+    });
+
+    if (matches.length > 0) {
+      positionSuggestions();
+      suggestions.style.display = "block";
+    } else {
+      suggestions.style.display = "none";
+    }
+  }
+
+  window.addEventListener('scroll', () => {
+    if (suggestions.style.display === 'block') positionSuggestions();
+  });
+  window.addEventListener('resize', () => {
+    if (suggestions.style.display === 'block') positionSuggestions();
+  });
+
+  document.addEventListener("click", e => {
+    if (!input.contains(e.target) && !suggestions.contains(e.target))
+      suggestions.style.display = "none";
+  });
+
+  input.addEventListener("focus", () => {
+    if (input.value.trim() && suggestions.children.length > 0)
+      suggestions.style.display = "block";
+  });
+</script>
+
+</body>
+</html>

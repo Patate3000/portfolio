@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Théo Cabrelli — Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #07123a;
+      --blue: #1230a0;
+      --accent: #3d6bff;
+      --accent2: #7ea8ff;
+      --white: #ffffff;
+      --text: #d4deff;
+      --muted: #7b8db5;
+      --card-bg: #0c1b4d;
+      --card-border: rgba(61, 107, 255, 0.25);
+      --glow: rgba(61, 107, 255, 0.15);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background-color: var(--navy);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.5;
+    }
+
+    /* ===== NAV ===== */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 18px 24px;
+      backdrop-filter: blur(20px);
+      background: rgba(7, 18, 58, 0.85);
+      border-bottom: 1px solid rgba(61, 107, 255, 0.15);
+    }
+
+    nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .nom {
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 700;
+      font-size: 1.6rem;
+      color: var(--white);
+      letter-spacing: 0.02em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 8px 18px;
+      border-radius: 50px;
+      border: 1px solid transparent;
+      transition: all 0.25s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--white);
+      border-color: var(--card-border);
+      background: rgba(61, 107, 255, 0.12);
+    }
+
+    .nav-links a.active {
+      color: var(--accent2);
+      background: rgba(61, 107, 255, 0.18);
+      border-color: rgba(61, 107, 255, 0.4);
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 90px 32px 70px;
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .hero-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 24px;
+    }
+
+    .hero-label::before,
+    .hero-label::after {
+      content: '';
+      width: 24px;
+      height: 1px;
+      background: var(--accent2);
+    }
+
+    .hero h1 {
+      font-family: 'Quicksand', sans-serif;
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.1;
+      letter-spacing: 0.01em;
+      margin-bottom: 16px;
+      background: linear-gradient(90deg, #ffffff, var(--accent2), #ffffff);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shine 4s linear infinite;
+    }
+
+    @keyframes shine {
+      to { background-position: 200% center; }
+    }
+
+    .hero h2 {
+      font-family: 'Quicksand', sans-serif;
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      font-weight: 500;
+      color: var(--accent2);
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      font-size: 1rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .hero-cta {
+      margin-top: 36px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent);
+      color: white;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 14px 32px;
+      border-radius: 50px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 32px rgba(61, 107, 255, 0.35);
+    }
+
+    .hero-cta:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(61, 107, 255, 0.5);
+      background: #5580ff;
+    }
+
+    /* ===== DIVIDER ===== */
+    .divider {
+      max-width: 900px;
+      margin: 0 auto;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--card-border), transparent);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===== SECTIONS ===== */
+    .section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 32px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .section-label::before,
+    .section-label::after {
+      content: '';
+      flex: 1;
+      max-width: 120px;
+      height: 1px;
+      background: var(--card-border);
+    }
+
+    .section-label h3 {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--white);
+      white-space: nowrap;
+    }
+
+    /* ===== PRÉSENTATION ===== */
+    .presentation-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 40px 48px;
+      max-width: 860px;
+      margin: 0 auto;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .presentation-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top center, rgba(61,107,255,0.07), transparent 70%);
+      pointer-events: none;
+    }
+
+    .presentation-box p {
+      font-size: 1.05rem;
+      line-height: 1.85;
+      color: var(--text);
+      text-align: justify;
+    }
+
+    .presentation-box strong {
+      color: var(--accent2);
+      font-weight: 600;
+    }
+
+    /* ===== TIMELINE SCOLAIRE ===== */
+    .timeline-wrap {
+      position: relative;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .timeline-wrap::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, transparent, var(--accent) 3%, var(--card-border) 20%, var(--card-border) 90%, transparent);
+      transform: translateX(-50%);
+      z-index: 0;
+    }
+
+    .timeline-sco {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .evt-sco {
+      display: grid;
+      grid-template-columns: 1fr 40px 1fr;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.5s ease forwards;
+    }
+
+    .evt-sco:nth-child(1) { animation-delay: 0.1s; }
+    .evt-sco:nth-child(2) { animation-delay: 0.2s; }
+    .evt-sco:nth-child(3) { animation-delay: 0.3s; }
+    .evt-sco:nth-child(4) { animation-delay: 0.4s; }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .cadre-sco { grid-column: auto; }
+
+    .sco-dot {
+      display: flex;
+      justify-content: center;
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    /* odd = cadre GAUCHE */
+    .evt-sco:nth-child(odd) .cadre-sco  { grid-column: 1; grid-row: 1; }
+    .evt-sco:nth-child(odd) .sco-empty  { grid-column: 3; grid-row: 1; }
+
+    /* even = cadre DROITE */
+    .evt-sco:nth-child(even) .cadre-sco { grid-column: 3; grid-row: 1; }
+    .evt-sco:nth-child(even) .sco-empty { grid-column: 1; grid-row: 1; }
+
+    .sco-dot-inner {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--navy);
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+
+    .cadre-sco {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px 24px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    .cadre-sco:hover {
+      border-color: rgba(61,107,255,0.5);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+    }
+
+    .cadre-sco strong {
+      display: block;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 700;
+      color: var(--white);
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+
+    .cadre-sco span {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    /* ===== CERTIFICATIONS ===== */
+    .cert-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 16px;
+    }
+
+    .cadre-cert {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+      min-height: 80px;
+      transition: all 0.3s ease;
+    }
+
+    .cadre-cert:hover {
+      border-color: rgba(61,107,255,0.5);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+    }
+
+    .cadre-gauche {
+      background: rgba(61, 107, 255, 0.12);
+      border-right: 1px solid var(--card-border);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 80px;
+      flex-shrink: 0;
+      align-self: stretch;
+    }
+
+    .rond-blanc {
+      width: 48px;
+      height: 48px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .rond-blanc img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+    }
+
+    .cadre-droit {
+      padding: 14px 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .cadre-droit p {
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--white);
+      margin: 0;
+    }
+
+    .bouton {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      padding: 6px 16px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-size: 0.78rem;
+      font-weight: 600;
+      width: fit-content;
+      transition: all 0.25s ease;
+    }
+
+    .bouton:hover {
+      background: #5580ff;
+      transform: translateY(-1px);
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      text-align: center;
+      padding: 40px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      border-top: 1px solid rgba(61,107,255,0.1);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 860px) {
+      .timeline-wrap::before { display: none; }
+      .evt-sco { display: flex; flex-direction: column; }
+      .sco-empty, .sco-dot { display: none; }
+      .cadre-sco { width: 100%; }
+      .cert-grid { grid-template-columns: 1fr; }
+      .presentation-box { padding: 28px 24px; }
+    }
+
+    @media (max-width: 600px) {
+      nav { flex-direction: column; }
+      .nav-links { justify-content: center; }
+      .hero { padding: 60px 20px 50px; }
+      .section { padding: 40px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="nom">Théo Cabrelli</div>
+    <div class="nav-links">
+      <a href="index.html" class="active">Accueil</a>
+      <a href="experiences.html">Expériences</a>
+      <a href="competences.html">Compétences</a>
+      <a href="veille_technologique.html">Veille</a>
+    </div>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-label">Portfolio</div>
+  <h1>Bonjour</h1>
+  <h2>Je m'appelle Théo Cabrelli</h2>
+  <p>Étudiant en L3 Pro CyDops</p>
+  <p>L3 Administrateur CyberDevOps</p>
+  <a href="documents/CV_Theo_Cabrelli.pdf" class="hero-cta">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Télécharger mon CV
+  </a>
+</section>
+
+<div class="divider"></div>
+
+<!-- PRÉSENTATION -->
+<section class="section">
+  <div class="section-label"><h3>Présentation</h3></div>
+  <div class="presentation-box">
+    <p>
+      Passionné par l'informatique depuis le collège, j'ai réalisé un bac pro systèmes numériques puis un BTS SIO SISR et actuellement une L3 CyberDevOps qui me correspondait le mieux. Ces domaines représentent une passion pour moi, que je développe non seulement dans le cadre de ma formation, mais également sur mon temps personnel à travers divers mini-projets (pfSense, Fortinet, Cisco, Stormshield, conteneurs, environnements Windows et Linux).
+    </p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PARCOURS SCOLAIRE -->
+<section class="section">
+  <div class="section-label"><h3>Mon parcours scolaire</h3></div>
+  <div class="timeline-wrap">
+    <div class="timeline-sco">
+
+      <div class="evt-sco">
+        <div class="cadre-sco">
+          <strong>Université Evry Paris Saclay (2025–2026)</strong>
+          <span>L3 Pro MRIT CyberDevOps</span>
+        </div>
+        <div class="sco-dot"><div class="sco-dot-inner"></div></div>
+        <div class="sco-empty"></div>
+      </div>
+
+      <div class="evt-sco">
+        <div class="cadre-sco">
+          <strong>Lycée Parc de Vilgenis (2023–2025)</strong>
+          <span>BTS SIO Option SISR</span>
+        </div>
+        <div class="sco-dot"><div class="sco-dot-inner"></div></div>
+        <div class="sco-empty"></div>
+      </div>
+
+      <div class="evt-sco">
+        <div class="cadre-sco">
+          <strong>Lycée Parc de Vilgenis (2020–2023)</strong>
+          <span>Bac Pro SN option C</span>
+        </div>
+        <div class="sco-dot"><div class="sco-dot-inner"></div></div>
+        <div class="sco-empty"></div>
+      </div>
+
+      <div class="evt-sco">
+        <div class="cadre-sco">
+          <strong>Collège Sainte-Marie (2016–2020)</strong>
+          <span>Diplôme National du Brevet</span>
+        </div>
+        <div class="sco-dot"><div class="sco-dot-inner"></div></div>
+        <div class="sco-empty"></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CERTIFICATIONS -->
+<section class="section">
+  <div class="section-label"><h3>Mes certifications</h3></div>
+  <div class="cert-grid">
+
+    <div class="cadre-cert">
+      <div class="cadre-gauche"><div class="rond-blanc"><img src="images/thm_logo.png" alt="TryHackMe"></div></div>
+      <div class="cadre-droit" style="overflow: hidden; padding: 10px 14px;">
+        <p>Badges TryHackMe</p>
+        <div style="width: 100%; overflow: hidden; height: 36px; margin-top: 4px;">
+         <iframe src="https://tryhackme.com/api/v2/badges/public-profile?userPublicId=1260515"
+            style="border:none; width: 600px; height: 150px; transform: scale(0.40); transform-origin: top left">
+          </iframe>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="cadre-cert">
+      <div class="cadre-gauche"><div class="rond-blanc"><img src="images/Cisco_logo.png" alt="Cisco"></div></div>
+      <div class="cadre-droit">
+        <p>Cisco CCNA</p>
+        <a href="documents/certifications/certificate_theo_cabrelli.pdf" class="bouton">Voir l'attestation</a>
+      </div>
+    </div>
+
+    <div class="cadre-cert">
+      <div class="cadre-gauche"><div class="rond-blanc"><img src="images/thm_logo.png" alt="THM"></div></div>
+      <div class="cadre-droit">
+        <p>JR Penetration Tester</p>
+        <a href="documents/certifications/THM/THM_JR_Penetration_Tester.pdf" class="bouton">Voir l'attestation</a>
+      </div>
+    </div>
+
+    <div class="cadre-cert">
+      <div class="cadre-gauche"><div class="rond-blanc"><img src="images/thm_logo.png" alt="THM"></div></div>
+      <div class="cadre-droit">
+        <p>Cyber Security Risks</p>
+        <a href="documents/certifications/THM/THM-Cyber_Security_101.pdf" class="bouton">Voir l'attestation</a>
+      </div>
+    </div>
+
+    <div class="cadre-cert">
+      <div class="cadre-gauche"><div class="rond-blanc"><img src="images/thm_logo.png" alt="THM"></div></div>
+      <div class="cadre-droit">
+        <p>Web Fundamentals</p>
+        <a href="documents/certifications/THM/THM-Web_Fundamentals.pdf" class="bouton">Voir l'attestation</a>
+      </div>
+    </div>
+
+    <div class="cadre-cert">
+      <div class="cadre-gauche"><div class="rond-blanc"><img src="images/thm_logo.png" alt="THM"></div></div>
+      <div class="cadre-droit">
+        <p>Pre Security</p>
+        <a href="documents/certifications/THM/THM-Pre_Security.pdf" class="bouton">Voir l'attestation</a>
+      </div>
+    </div>
+
+    <div class="cadre-cert">
+      <div class="cadre-gauche"><div class="rond-blanc"><img src="images/logo_google.jpg" alt="Google"></div></div>
+      <div class="cadre-droit">
+        <p>Foundations Of Cybersecurity</p>
+        <a href="documents/certifications/Google/Foundations_Of_Cybersecurity.pdf" class="bouton">Voir l'attestation</a>
+      </div>
+    </div>
+
+    <div class="cadre-cert">
+      <div class="cadre-gauche"><div class="rond-blanc"><img src="images/logo_google.jpg" alt="Google"></div></div>
+      <div class="cadre-droit">
+        <p>Connect And Protect</p>
+        <a href="documents/certifications/Google/connect_and_protect.pdf" class="bouton">Voir l'attestation</a>
+      </div>
+    </div>
+
+    <div class="cadre-cert">
+      <div class="cadre-gauche"><div class="rond-blanc"><img src="images/logo_google.jpg" alt="Google"></div></div>
+      <div class="cadre-droit">
+        <p>Manage Security Risks</p>
+        <a href="documents/certifications/Google/Manage_Security_Risks.pdf" class="bouton">Voir l'attestation</a>
+      </div>
+    </div>
+
+    <div class="cadre-cert">
+      <div class="cadre-gauche"><div class="rond-blanc"><img src="images/logo_google.jpg" alt="Google"></div></div>
+      <div class="cadre-droit">
+        <p>Cybersecurity Foundations</p>
+        <a href="documents/certifications/Google/Foundations_Of_Cybersecurity.pdf" class="bouton">Voir l'attestation</a>
+      </div>
+    </div>
+
+    <div class="cadre-cert">
+      <div class="cadre-gauche"><div class="rond-blanc"><img src="images/secnum.png" alt="SecNum"></div></div>
+      <div class="cadre-droit">
+        <p>SecNumAcadémie</p>
+        <a href="documents/certifications/SecNumacademie_ANSSI.pdf" class="bouton">Voir l'attestation</a>
+      </div>
+    </div>
+
+    <div class="cadre-cert">
+      <div class="cadre-gauche"><div class="rond-blanc"><img src="images/logo_cnil_rgpd.png" alt="CNIL"></div></div>
+      <div class="cadre-droit">
+        <p>CNIL : Mooc sur la RGPD</p>
+        <a href="documents/certifications/CNIL_Mooc_sur_la_RGPD.pdf" class="bouton">Voir l'attestation</a>
+      </div>
+    </div>
+
+    <div class="cadre-cert">
+      <div class="cadre-gauche"><div class="rond-blanc"><img src="images/Pix_logo.png" alt="PIX"></div></div>
+      <div class="cadre-droit">
+        <p>PIX</p>
+        <a href="documents/certifications/attestation_pix_20230308.pdf" class="bouton">Voir l'attestation</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 Théo Cabrelli · Portfolio</p>
+</footer>
+
+</body>
+</html>

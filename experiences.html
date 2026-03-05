@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expériences — Théo Cabrelli</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #07123a;
+      --blue: #1230a0;
+      --accent: #3d6bff;
+      --accent2: #7ea8ff;
+      --light: #eef2ff;
+      --white: #ffffff;
+      --text: #d4deff;
+      --muted: #7b8db5;
+      --card-bg: #0c1b4d;
+      --card-border: rgba(61, 107, 255, 0.25);
+      --glow: rgba(61, 107, 255, 0.15);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background-color: var(--navy);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Noise texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.5;
+    }
+
+    /* ===== NAVIGATION ===== */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 18px 24px;
+      backdrop-filter: blur(20px);
+      background: rgba(7, 18, 58, 0.85);
+      border-bottom: 1px solid rgba(61, 107, 255, 0.15);
+    }
+
+    nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .nom {
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 700;
+      font-size: 1.6rem;
+      color: var(--white);
+      letter-spacing: 0.02em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 8px 18px;
+      border-radius: 50px;
+      border: 1px solid transparent;
+      transition: all 0.25s ease;
+      letter-spacing: 0.01em;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--white);
+      border-color: var(--card-border);
+      background: rgba(61, 107, 255, 0.12);
+    }
+
+    .nav-links a.active {
+      color: var(--accent2);
+      background: rgba(61, 107, 255, 0.18);
+      border-color: rgba(61, 107, 255, 0.4);
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 80px 32px 60px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 20px;
+    }
+
+    .hero-label::before {
+      content: '';
+      width: 24px;
+      height: 1px;
+      background: var(--accent2);
+    }
+
+    .hero h1 {
+      font-family: 'Quicksand', sans-serif;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.15;
+      letter-spacing: 0.01em;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 span {
+      color: var(--accent);
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      display: none;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      margin-top: 48px;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat-num {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== TIMELINE ===== */
+    .timeline-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 32px 120px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .timeline-line {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, transparent, var(--accent) 5%, var(--card-border) 40%, var(--card-border) 90%, transparent);
+      transform: translateX(-50%);
+      z-index: 0;
+    }
+
+    .timeline-inner {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .timeline-inner::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, transparent, var(--accent) 3%, var(--card-border) 20%, var(--card-border) 90%, transparent);
+      transform: translateX(-50%);
+      z-index: 0;
+    }
+
+    .exp-item {
+      display: grid;
+      grid-template-columns: 1fr 60px 1fr;
+      align-items: start;
+      margin-bottom: 48px;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeUp 0.6s ease forwards;
+    }
+
+    .exp-item:nth-child(1) { animation-delay: 0.1s; }
+    .exp-item:nth-child(2) { animation-delay: 0.2s; }
+    .exp-item:nth-child(3) { animation-delay: 0.3s; }
+    .exp-item:nth-child(4) { animation-delay: 0.4s; }
+    .exp-item:nth-child(5) { animation-delay: 0.5s; }
+    .exp-item:nth-child(6) { animation-delay: 0.6s; }
+    .exp-item:nth-child(7) { animation-delay: 0.7s; }
+    .exp-item:nth-child(8) { animation-delay: 0.8s; }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .exp-empty { }
+
+    .exp-dot-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    .exp-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 3px solid var(--navy);
+      box-shadow: 0 0 0 2px var(--accent), 0 0 16px var(--glow);
+      margin-top: 28px;
+      flex-shrink: 0;
+      transition: transform 0.3s ease;
+    }
+
+    .exp-item:hover .exp-dot {
+      transform: scale(1.4);
+      box-shadow: 0 0 0 3px var(--accent), 0 0 24px rgba(61, 107, 255, 0.5);
+    }
+
+    /* odd = card LEFT */
+    .exp-item:nth-child(odd) .exp-card   { grid-column: 1; grid-row: 1; }
+    .exp-item:nth-child(odd) .exp-empty  { grid-column: 3; grid-row: 1; }
+
+    /* even = card RIGHT */
+    .exp-item:nth-child(even) .exp-card  { grid-column: 3; grid-row: 1; }
+    .exp-item:nth-child(even) .exp-empty { grid-column: 1; grid-row: 1; }
+
+    .exp-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 28px 32px;
+      transition: all 0.35s ease;
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .exp-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(61,107,255,0.07), transparent 70%);
+      pointer-events: none;
+    }
+
+    .exp-card:hover {
+      border-color: rgba(61, 107, 255, 0.5);
+      box-shadow: 0 0 40px rgba(61, 107, 255, 0.1), 0 20px 60px rgba(0,0,0,0.3);
+      transform: translateY(-4px);
+    }
+
+    .exp-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .exp-logo-wrap {
+      width: 120px;
+      height: 70px;
+      border-radius: 14px;
+      background: #ffffff;
+      border: 2px solid rgba(61, 107, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      padding: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+      overflow: hidden;
+    }
+
+    .exp-logo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      display: block;
+    }
+
+    .exp-logo-letter {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.4rem;
+      color: var(--accent2);
+    }
+
+    .exp-title-block {
+      flex: 1;
+    }
+
+    .exp-company {
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .exp-date {
+      font-size: 0.8rem;
+      color: var(--accent2);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+
+    .exp-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(61, 107, 255, 0.12);
+      border: 1px solid rgba(61, 107, 255, 0.25);
+      padding: 4px 10px;
+      border-radius: 50px;
+      white-space: nowrap;
+    }
+
+    .exp-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 16px;
+      font-style: italic;
+    }
+
+    .exp-meta {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .exp-meta-item {
+      font-size: 0.78rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .exp-meta-item svg {
+      opacity: 0.6;
+    }
+
+    .exp-divider {
+      height: 1px;
+      background: rgba(61, 107, 255, 0.12);
+      margin-bottom: 16px;
+    }
+
+    .exp-tasks {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .exp-tasks li {
+      font-size: 0.85rem;
+      color: var(--text);
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      line-height: 1.5;
+    }
+
+    .exp-tasks li::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+      margin-top: 7px;
+    }
+
+    /* expanded toggle */
+    .exp-tasks.collapsed li:nth-child(n+4) {
+      display: none;
+    }
+
+    .exp-toggle {
+      margin-top: 12px;
+      font-size: 0.8rem;
+      color: var(--accent2);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0;
+      transition: color 0.2s;
+    }
+
+    .exp-toggle:hover { color: var(--white); }
+
+    /* ===== FOOTER ===== */
+    footer {
+      text-align: center;
+      padding: 40px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      border-top: 1px solid rgba(61,107,255,0.1);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 860px) {
+      .timeline-line { display: none; }
+
+      .exp-item {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .exp-empty, .exp-dot-col { display: none; }
+
+      .exp-card {
+        width: 100%;
+      }
+
+      .hero { padding: 48px 20px 40px; }
+      .timeline-section { padding: 0 20px 80px; }
+    }
+
+    @media (max-width: 600px) {
+      nav { flex-direction: column; }
+      .nav-links { justify-content: center; }
+      .hero-stats { gap: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="nom">Théo Cabrelli</div>
+    <div class="nav-links">
+      <a href="index.html">Accueil</a>
+      <a href="experiences.html" class="active">Expériences</a>
+      <a href="competences.html">Compétences</a>
+      <a href="veille_technologique.html">Veille</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-label">Parcours professionnel</div>
+  <h1>Mes <span>Expériences</span></h1>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num">8</span><span class="stat-label">Stages</span></div>
+    <div class="stat"><span class="stat-num">5+</span><span class="stat-label">Années</span></div>
+    <div class="stat"><span class="stat-num">3</span><span class="stat-label">Domaines</span></div>
+  </div>
+</section>
+
+<section class="timeline-section">
+  <div class="timeline-inner">
+
+    <!-- DC2Scale -->
+    <div class="exp-item">
+      <div class="exp-card">
+        <div class="exp-header">
+          <div class="exp-logo-wrap">
+            <img src="images/logo_dc2scale.png" alt="DC2Scale" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+            <span class="exp-logo-letter" style="display:none">D</span>
+          </div>
+          <div class="exp-title-block">
+            <div class="exp-company">DC2Scale</div>
+            <div class="exp-date">Nov 2024 – Déc 2024 · Vélizy-Villacoublay</div>
+          </div>
+          <span class="exp-badge">Réseau & Infra</span>
+        </div>
+        <p class="exp-desc">Jeune startup française concevant et exploitant ses propres datacenters dans une démarche écologique. 22 employés · CA 4M€ (2024)</p>
+        <div class="exp-meta">
+          <span class="exp-meta-item">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Vélizy-Villacoublay
+          </span>
+          <span class="exp-meta-item">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+            Datacenter / Startup
+          </span>
+        </div>
+        <div class="exp-divider"></div>
+        <ul class="exp-tasks collapsed" id="tasks-1">
+          <li>Configuration d'interfaces sur firewall Fortinet</li>
+          <li>Montage de serveurs et installation de Windows Server Datacenter et Proxmox</li>
+          <li>Installation et configuration de rigs de minage</li>
+          <li>Livraisons de baies serveurs</li>
+          <li>Installations et configurations de switches</li>
+          <li>Installation du stand lors d'un salon professionnel</li>
+          <li>Extraction de données entre serveurs</li>
+          <li>Installation d'équipements réseau sur différents sites</li>
+        </ul>
+        <button class="exp-toggle" onclick="toggleTasks('tasks-1', this)">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+          Voir tout (8 tâches)
+        </button>
+      </div>
+      <div class="exp-dot-col"><div class="exp-dot"></div></div>
+      <div class="exp-empty"></div>
+    </div>
+
+    <!-- DGA -->
+    <div class="exp-item">
+      <div class="exp-card">
+        <div class="exp-header">
+          <div class="exp-logo-wrap">
+            <img src="images/logo_dga.png" alt="DGA" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+            <span class="exp-logo-letter" style="display:none">D</span>
+          </div>
+          <div class="exp-title-block">
+            <div class="exp-company">DGA — Service S2NA</div>
+            <div class="exp-date">Mai 2024 – Juil 2024 · Arcueil</div>
+          </div>
+          <span class="exp-badge">Réseau</span>
+        </div>
+        <p class="exp-desc">Délégation Générale pour l'Armement, responsable des acquisitions d'armement. 10 000 employés · CA 10Md€ (2024)</p>
+        <div class="exp-meta">
+          <span class="exp-meta-item">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Arcueil
+          </span>
+          <span class="exp-meta-item">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+            Défense / État
+          </span>
+        </div>
+        <div class="exp-divider"></div>
+        <ul class="exp-tasks collapsed" id="tasks-2">
+          <li>Maintenance et configuration des switches réseau</li>
+          <li>Maquette simulant deux sites avec switches et Stormshields</li>
+          <li>Brassage de prise dans les salles serveurs</li>
+          <li>Installation de postes et configuration des périphériques autorisés</li>
+          <li>Support utilisateur avec GLPI</li>
+          <li>Configuration de nouveaux postes sur Fusion Inventory</li>
+        </ul>
+        <button class="exp-toggle" onclick="toggleTasks('tasks-2', this)">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+          Voir tout (6 tâches)
+        </button>
+      </div>
+      <div class="exp-dot-col"><div class="exp-dot"></div></div>
+      <div class="exp-empty"></div>
+    </div>
+
+    <!-- IRSN CEA -->
+    <div class="exp-item">
+      <div class="exp-card">
+        <div class="exp-header">
+          <div class="exp-logo-wrap">
+            <img src="images/logo_CEA_IRSN.png" alt="IRSN CEA" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+            <span class="exp-logo-letter" style="display:none">C</span>
+          </div>
+          <div class="exp-title-block">
+            <div class="exp-company">IRSN / CEA</div>
+            <div class="exp-date">Nov 2022 – Jan 2023 · Cybersécurité</div>
+          </div>
+          <span class="exp-badge">Cybersec</span>
+        </div>
+        
+        <p class="exp-desc">L'IRSN surveille la radiologie environnementale. Le CEA est l'organisme national dédié à l'énergie nucléaire. 21 000 employés · CA 600M€ (2023)</p>
+                <div class="exp-meta">
+          <span class="exp-meta-item">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Fontenay Aux Roses
+          </span>
+          <span class="exp-meta-item">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+            Défense
+          </span>
+        </div>
+        <div class="exp-divider"></div>
+        <ul class="exp-tasks" id="tasks-3">
+          <li>Entraînement au Pentest sur TryHackMe, Root Me et Hack The Box avec Kali Linux</li>
+          <li>Utilisation du Flipper Zero (scan de badge, fuzzing, ouverture de portes)</li>
+          <li>Étude approfondie sur les Honeypots</li>
+        </ul>
+      </div>
+      <div class="exp-dot-col"><div class="exp-dot"></div></div>
+      <div class="exp-empty"></div>
+    </div>
+
+    <!-- EVENEMENT-SOE 2022 -->
+    <div class="exp-item">
+      <div class="exp-card">
+        <div class="exp-header">
+          <div class="exp-logo-wrap">
+            <img src="images/logo_soe.png" alt="EVENEMENT-SOE" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+            <span class="exp-logo-letter" style="display:none">S</span>
+          </div>
+          <div class="exp-title-block">
+            <div class="exp-company">EVENEMENT-SOE</div>
+            <div class="exp-date">Mai 2022 – Mai 2022 · Fresnes</div>
+          </div>
+          <span class="exp-badge">Audiovisuel</span>
+        </div>
+        <p class="exp-desc">Spécialisée dans l'installation et la gestion audiovisuelle et sonore d'événements. 4 employés · CA 100K€ (2022)</p>
+                <div class="exp-meta">
+          <span class="exp-meta-item">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Fresnes
+          </span>
+          <span class="exp-meta-item">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+            TPE
+          </span>
+        </div>
+        <div class="exp-divider"></div>
+        <ul class="exp-tasks" id="tasks-4">
+          <li>Installation de matériel audio et vidéo lors d'événements</li>
+          <li>Montage vidéo sur Adobe Premiere Pro</li>
+          <li>Configuration d'un point d'accès wifi Unifi</li>
+          <li>Création d'un show de lumière avec la console Dot2 Ma Lighting</li>
+        </ul>
+      </div>
+      <div class="exp-dot-col"><div class="exp-dot"></div></div>
+      <div class="exp-empty"></div>
+    </div>
+
+    <!-- XEFI -->
+    <div class="exp-item">
+      <div class="exp-card">
+        <div class="exp-header">
+          <div class="exp-logo-wrap">
+            <img src="images/logo_xefi.png" alt="XEFI" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+            <span class="exp-logo-letter" style="display:none">X</span>
+          </div>
+          <div class="exp-title-block">
+            <div class="exp-company">XEFI</div>
+            <div class="exp-date">Mars 2022 – Avr 2022 · Antony</div>
+          </div>
+          <span class="exp-badge">Maintenance</span>
+        </div>
+        <p class="exp-desc">Spécialisée dans la maintenance et la configuration d'ordinateurs. 4 employés · CA 150K€ (2022)</p>
+                <div class="exp-meta">
+          <span class="exp-meta-item">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Antony
+          </span>
+          <span class="exp-meta-item">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+            TPE
+          </span>
+        </div>
+        <div class="exp-divider"></div>
+        <ul class="exp-tasks" id="tasks-5">
+          <li>Maintenance et dépannage d'ordinateurs à distance et en atelier</li>
+          <li>Configuration de points d'accès wifi TP-Link pour une entreprise</li>
+          <li>Configuration de postes informatiques pour une entreprise</li>
+          <li>Transfert et clone de disques pour des sauvegardes clients</li>
+        </ul>
+      </div>
+      <div class="exp-dot-col"><div class="exp-dot"></div></div>
+      <div class="exp-empty"></div>
+    </div>
+
+    <!-- EVENEMENT-SOE 2021 -->
+    <div class="exp-item">
+      <div class="exp-card">
+        <div class="exp-header">
+          <div class="exp-logo-wrap">
+            <img src="images/logo_soe.png" alt="EVENEMENT-SOE" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+            <span class="exp-logo-letter" style="display:none">S</span>
+          </div>
+          <div class="exp-title-block">
+            <div class="exp-company">EVENEMENT-SOE</div>
+            <div class="exp-date">Mai 2021 – Juil 2021 · Fresnes</div>
+          </div>
+          <span class="exp-badge">Audiovisuel</span>
+        </div>
+        <p class="exp-desc">Spécialisée dans l'installation et la gestion audiovisuelle et sonore d'événements. 4 employés · CA 80K€ (2021)</p>
+                <div class="exp-meta">
+          <span class="exp-meta-item">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Fresnes
+          </span>
+          <span class="exp-meta-item">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+            Filiale TPE
+          </span>
+        </div>
+        <div class="exp-divider"></div>
+        <ul class="exp-tasks" id="tasks-6">
+          <li>Installation de matériel audio et vidéo lors d'événements</li>
+          <li>Création d'un show de lumière avec la console Dot2 Ma Lighting</li>
+          <li>Assistance lors d'événements pour la gestion des scènes et projecteurs</li>
+        </ul>
+      </div>
+      <div class="exp-dot-col"><div class="exp-dot"></div></div>
+      <div class="exp-empty"></div>
+    </div>
+
+    <!-- Maison Seyssac -->
+    <div class="exp-item">
+      <div class="exp-card">
+        <div class="exp-header">
+          <div class="exp-logo-wrap">
+            <img src="images/logo_maison_seyssac.png" alt="Maison Seyssac" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+            <span class="exp-logo-letter" style="display:none">M</span>
+          </div>
+          <div class="exp-title-block">
+            <div class="exp-company">Maison Seyssac</div>
+            <div class="exp-date">Fév 2020 · Observation</div>
+          </div>
+          <span class="exp-badge">Commerce</span>
+        </div>
+        <p class="exp-desc">Boutique de fruits et légumes. 3 employés · CA 40K€ (2020)</p>
+        <div class="exp-divider"></div>
+                <div class="exp-meta">
+          <span class="exp-meta-item">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Antony
+          </span>
+          <span class="exp-meta-item">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+            TPE
+          </span>
+        </div>
+        <ul class="exp-tasks" id="tasks-7">
+          <li>Mise en rayon de produits alimentaires</li>
+          <li>Visite du marché de Rungis</li>
+          <li>Inventaire des produits en stock</li>
+          <li>Réception et rangement de la marchandise</li>
+          <li>Vente</li>
+        </ul>
+      </div>
+      <div class="exp-dot-col"><div class="exp-dot"></div></div>
+      <div class="exp-empty"></div>
+    </div>
+
+    <!-- ITAQUE -->
+    <div class="exp-item">
+      <div class="exp-card">
+        <div class="exp-header">
+          <div class="exp-logo-wrap">
+            <img src="images/logo_itaque.png" alt="ITAQUE" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+            <span class="exp-logo-letter" style="display:none">I</span>
+          </div>
+          <div class="exp-title-block">
+            <div class="exp-company">ITAQUE</div>
+            <div class="exp-date">Avr 2019 · Nanterre · Observation</div>
+          </div>
+          <span class="exp-badge">Informatique</span>
+        </div>
+        <p class="exp-desc">Spécialisée dans la maintenance informatique. 10 employés · CA 300K€ (2019)</p>
+                <div class="exp-meta">
+          <span class="exp-meta-item">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Nanterre
+          </span>
+          <span class="exp-meta-item">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+            TPE
+          </span>
+        </div>
+        <div class="exp-divider"></div>
+        <ul class="exp-tasks" id="tasks-8">
+          <li>Résolution d'un problème client à distance</li>
+          <li>Observation du processus de développement d'une application</li>
+          <li>Mises à jour sur des caisses enregistreuses</li>
+          <li>Démontage et remontage d'un écran d'ordinateur</li>
+          <li>Observation du support client et résolution de problèmes</li>
+          <li>Fabrication de cartes magnétiques</li>
+        </ul>
+      </div>
+      <div class="exp-dot-col"><div class="exp-dot"></div></div>
+      <div class="exp-empty"></div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 Théo Cabrelli · Portfolio</p>
+</footer>
+
+<script>
+  function toggleTasks(id, btn) {
+    const list = document.getElementById(id);
+    const isCollapsed = list.classList.contains('collapsed');
+    if (isCollapsed) {
+      list.classList.remove('collapsed');
+      btn.innerHTML = `<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg> Réduire`;
+    } else {
+      list.classList.add('collapsed');
+      const count = list.querySelectorAll('li').length;
+      btn.innerHTML = `<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg> Voir tout (${count} tâches)`;
+    }
+  }
+</script>
+</body>
+</html>
